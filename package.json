@@ -1,0 +1,125 @@
+{
+	"name": "salt-electron",
+	"productName": "Salt",
+	"version": "1.0.4-rc.1",
+	"description": "Salt is a standard for downloading, handling, and managing files.",
+	"main": "main.js",
+	"author": "meponder",
+	"license": "MIT",
+	"dependencies": {
+		"electron-ipc-extra": "^2.0.0",
+		"electron-squirrel-startup": "^1.0.0",
+		"fs-extra": "^10.0.0",
+		"salt-nodejs": "^1.0.4-b"
+	},
+	"devDependencies": {
+		"electron": "^16.0.5",
+		"electron-builder": "^22.14.5",
+		"electron-builder-squirrel-windows": "^22.14.10",
+		"eslint": "^8.1.0"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "electron .",
+		"br": "node buildWeb.js && electron .",
+		"build-ui": "node buildWeb.js",
+		"package": "node buildWeb.js && electron-builder --dir",
+		"make": "node buildWeb.js && electron-builder",
+		"make-win": "electron-builder -w",
+		"make-lin": "electron-builder -l",
+		"make-mac": "electron-builder -m",
+		"make-all": "electron-builder -mwl",
+		"fullmake": "node buildWeb.js && electron-builder -mwl"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Salt-PM/salt-electron.git"
+	},
+	"build": {
+		"files": [
+			"./assets/*",
+			"./ui/*",
+			"./ui/**/*",
+			"!./web/",
+			"./main.js",
+			"./render.js"
+		],
+		"appId": "meponder.salt-electron",
+		"remoteBuild": false,
+		"removePackageScripts": true,
+		"win": {
+			"target": [
+				{
+					"target": "squirrel",
+					"arch": [
+						"x64"
+					]
+				}
+			],
+			"icon": "./assets/Salt.ico",
+			"publish": [
+				{
+					"provider": "github",
+					"releaseType": "draft"
+				}
+			]
+		},
+		"linux": {
+			"target": [
+				{
+					"target": "appImage",
+					"arch": [
+						"x64"
+					]
+				}
+			],
+			"synopsis": "Salt is a standard for downloading, handling, and managing files.",
+			"category": "Utility",
+			"icon": "./assets/256x256.png",
+			"publish": [
+				{
+					"provider": "github",
+					"releaseType": "draft"
+				}
+			]
+		},
+		"squirrelWindows": {
+			"iconUrl": "https://github.com/Salt-PM/salt-electron/assets/Salt.ico?raw=true"
+		}
+	},
+	"config": {
+		"forge": {
+			"packagerConfig": {
+				"icon": "Salt.ico",
+				"ignore": [
+					"config.json",
+					"web/",
+					"readme.md"
+				]
+			},
+			"makers": [
+				{
+					"name": "@electron-forge/maker-squirrel"
+				},
+				{
+					"name": "@electron-forge/maker-dmg",
+					"config": {
+						"background": "./assets/dmg-background.png",
+						"format": "ULFO"
+					}
+				},
+				{
+					"name": "@electron-forge/maker-flatpak",
+					"config": {
+						"options": {
+							"categories": [
+								"Utility"
+							]
+						}
+					}
+				}
+			]
+		},
+		"packager": {}
+	}
+}
