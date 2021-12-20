@@ -8,49 +8,67 @@ on:
   workflow_dispatch:
 
 jobs:
-    Build Windows:
+    Build-Windows:
         runs-on: windows-latest
 
         steps:
-            - name: Checkout Source
-              uses: actions/checkout@v2
+          - name: Checkout Source
+            uses: actions/checkout@v2
 
-            - name: Install Node
+          - name: Install Node
             uses: actions/setup-node@v2
+            with:
+                node-version: '16'
 
-            - name: Install node packages
-              run: npm install
+          - name: Install node packages for Electron
+            run: npm install
 
-            - name: Make with Electron Builder
-              run: npm run make-win
+          - name: Install node packages for React
+            run: npm install
+            working-directory: ./web
 
-            - name: Upload Windows Executable
-              uses: actions/upload-artifact@v2
-              if: matrix.os == 'windows-latest'
-              with:
-              name: Windows x64
-              path: ./dist/squirrel-windows/Salt-*.exe
+          - name: Build React UI
+            run: node buildWeb
+
+          - name: Make with Electron Builder
+            run: npm run make-win
+
+          - name: Upload Windows Executable
+            uses: actions/upload-artifact@v2
+            if: matrix.os == 'windows-latest'
+            with:
+                name: Windows x64
+                path: ./dist/squirrel-windows/Salt-*.exe
 
 
-    Build Linux:
+    Build-Linux:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout Source
-              uses: actions/checkout@v2
+          - name: Checkout Source
+            uses: actions/checkout@v2
 
-            - name: Install Node
-              uses: actions/setup-node@v2
+          - name: Install Node
+            uses: actions/setup-node@v2
+            with:
+                node-version: '16'
 
-            - name: Install node packages
-              run: npm install
+          - name: Install node packages for Electron
+                run: npm install
 
-            - name: Make with Electron Builder
-              run: npm run make-lin
+          - name: Install node packages for React
+                run: npm install
+                working-directory: ./web
 
-            - name: Upload Linux AppImage
-              uses: actions/upload-artifact@v2
-              if: matrix.os == 'ubuntu-latest'
-              with:
-              name: Linux AppImage
-              path: ./dist/Salt-*.AppImage
+          - name: Build React UI
+            run: node buildWeb
+
+          - name: Make with Electron Builder
+            run: npm run make-lin
+
+          - name: Upload Linux AppImage
+            uses: actions/upload-artifact@v2
+            if: matrix.os == 'ubuntu-latest'
+            with:
+                name: Linux AppImage
+                path: ./dist/Salt-*.AppImage
