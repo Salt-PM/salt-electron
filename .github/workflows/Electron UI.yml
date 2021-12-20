@@ -54,11 +54,11 @@ jobs:
                 node-version: '16'
 
           - name: Install node packages for Electron
-                run: npm install
+            run: npm install
 
           - name: Install node packages for React
-                run: npm install
-                working-directory: ./web
+            run: npm install
+            working-directory: ./web
 
           - name: Build React UI
             run: node buildWeb
