@@ -13,23 +13,23 @@ jobs:
 
         steps:
             - name: Checkout Source
-                uses: actions/checkout@v2
+              uses: actions/checkout@v2
 
             - name: Install Node
-                uses: actions/setup-node@v2
+            uses: actions/setup-node@v2
 
             - name: Install node packages
-                run: npm install
+              run: npm install
 
             - name: Make with Electron Builder
-                run: npm run make-win
+              run: npm run make-win
 
             - name: Upload Windows Executable
-                uses: actions/upload-artifact@v2
-                if: matrix.os == 'windows-latest'
-                with:
-                name: Windows x64
-                path: ./electron/dist/squirrel-windows/Salt-*.exe
+              uses: actions/upload-artifact@v2
+              if: matrix.os == 'windows-latest'
+              with:
+              name: Windows x64
+              path: ./dist/squirrel-windows/Salt-*.exe
 
 
     Build Linux:
@@ -37,20 +37,20 @@ jobs:
 
         steps:
             - name: Checkout Source
-                uses: actions/checkout@v2
+              uses: actions/checkout@v2
 
             - name: Install Node
-                uses: actions/setup-node@v2
+              uses: actions/setup-node@v2
 
             - name: Install node packages
-                run: npm install
+              run: npm install
 
             - name: Make with Electron Builder
-                run: npm run make-lin
+              run: npm run make-lin
 
             - name: Upload Linux AppImage
-                uses: actions/upload-artifact@v2
-                if: matrix.os == 'ubuntu-latest'
-                with:
-                name: Linux AppImage
-                path: ./electron/dist/Salt-*.AppImage
+              uses: actions/upload-artifact@v2
+              if: matrix.os == 'ubuntu-latest'
+              with:
+              name: Linux AppImage
+              path: ./dist/Salt-*.AppImage
