@@ -1,7 +1,7 @@
 {
 	"name": "salt-electron",
-	"productName": "Salt",
-	"version": "1.0.4-rc.2",
+	"productName": "Salt Manager",
+	"version": "1.0.4-rc.3",
 	"description": "Salt is a standard for downloading, handling, and managing files.",
 	"main": "main.js",
 	"author": "meponder",

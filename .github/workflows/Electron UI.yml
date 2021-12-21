@@ -39,7 +39,7 @@ jobs:
             uses: actions/upload-artifact@v2
             with:
                 name: Windows x64
-                path: ./dist/squirrel-windows/Salt Setup*.exe
+                path: ./dist/squirrel-windows/Salt Manager Setup*.exe
 
 
     Build-Linux:
@@ -73,7 +73,7 @@ jobs:
             uses: actions/upload-artifact@v2
             with:
                 name: Linux AppImage
-                path: ./dist/Salt-*.AppImage
+                path: ./dist/Salt Manager-*.AppImage
 
 
     Build-MacOS:
@@ -103,5 +103,14 @@ jobs:
             env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          - name: List MacOS Build Files
-            run: tree ./dist/
+          - name: Upload MacOS DMG
+            uses: actions/upload-artifact@v2
+            with:
+                name: MacOS DMG
+                path: ./dist/macos/Salt Manager-*.dmg
+
+          - name: Upload MacOS .app
+            uses: actions/upload-artifact@v2
+            with:
+                name: MacOS DMG
+                path: ./dist/macos/Salt Manager-*.zip
