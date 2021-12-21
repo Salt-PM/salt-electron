@@ -39,7 +39,7 @@ jobs:
             uses: actions/upload-artifact@v2
             with:
                 name: Windows x64
-                path: ./dist/squirrel-windows/Salt-*.exe
+                path: ./dist/squirrel-windows/Salt Setup*.exe
 
 
     Build-Linux:
@@ -74,3 +74,34 @@ jobs:
             with:
                 name: Linux AppImage
                 path: ./dist/Salt-*.AppImage
+
+
+    Build-MacOS:
+        runs-on: macos-latest
+
+        steps:
+          - name: Checkout Source
+            uses: actions/checkout@v2
+
+          - name: Install Node
+            uses: actions/setup-node@v2
+            with:
+                node-version: '16'
+
+          - name: Install node packages for Electron
+            run: npm install
+
+          - name: Install node packages for React
+            run: npm install
+            working-directory: ./web
+
+          - name: Build React UI
+            run: node buildWeb
+
+          - name: Make with Electron Builder
+            run: npm run make-mac
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          - name: List MacOS Build Files
+            run: tree ./dist/

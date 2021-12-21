@@ -129,7 +129,7 @@ function FilesPage() {
     };
 
     async function refreshFiles() {
-        let items = await salt.getCachedListOfItems()
+        let items = await salt.getCachedListOfItems();
         for (const id in items) {
             if (Object.hasOwnProperty.call(items, id)) {
                 const item = items[id];
@@ -138,11 +138,11 @@ function FilesPage() {
                     Author: "",
                     Categories: "",
                     Series: "",
-                }
+                };
                 Object.assign(row, item);
 
                 let itemSeries = item.Series;
-                if (typeof itemSeries === "object" && !(itemSeries instanceof Array)) {
+                if (itemSeries.constructor === Object) {
                     row.Series = [];
                     let objectsToProcess = [];
                     objectsToProcess.push(itemSeries);
@@ -150,13 +150,14 @@ function FilesPage() {
                         let currentObject = objectsToProcess.pop();
                         for (const series in currentObject) {
                             if (Object.hasOwnProperty.call(currentObject, series)) {
-                                if (typeof currentObject[series] === "object" && !(series instanceof Array)) {
-                                    row.Series.push(series);
-                                    objectsToProcess.push(currentObject[series]);
-                                } else if (currentObject[series] instanceof Array) {
-                                    row.Series.concat(currentObject[series]);
-                                } else if (typeof currentObject[series] === "string") {
-                                    row.Series.push(currentObject[series]);
+                                row.Series.push(series);
+                                let currentSeriesData = currentObject[series];
+                                if (currentSeriesData.constructor === Object) {
+                                    objectsToProcess.push(currentSeriesData);
+                                } else if (currentSeriesData instanceof Array) {
+                                    row.Series.concat(currentSeriesData);
+                                } else if (typeof currentSeriesData === "string" && currentSeriesData !== "") {
+                                    row.Series.push(currentSeriesData);
                                 }
                             }
                         }
@@ -168,7 +169,7 @@ function FilesPage() {
                 }
 
                 let itemCategories = item.Categories;
-                if (typeof itemCategories === "object" && !(itemCategories instanceof Array)) {
+                if (itemCategories.constructor === Object) {
                     row.Categories = [];
                     let objectsToProcess = [];
                     objectsToProcess.push(itemCategories);
@@ -176,13 +177,14 @@ function FilesPage() {
                         let currentObject = objectsToProcess.pop();
                         for (const category in currentObject) {
                             if (Object.hasOwnProperty.call(currentObject, category)) {
-                                if (typeof currentObject[category] === "object" && !(category instanceof Array)) {
-                                    row.Categories.push(category);
-                                    objectsToProcess.push(currentObject[category]);
-                                } else if (currentObject[category] instanceof Array) {
-                                    row.Categories.concat(currentObject[category]);
-                                } else if (typeof currentObject[category] === "string") {
-                                    row.Categories.push(currentObject[category]);
+                                let currentCategoryData = currentObject[category];
+                                row.Categories.push(category);
+                                if (currentCategoryData.constructor === Object) {
+                                    objectsToProcess.push(currentCategoryData);
+                                } else if (currentCategoryData instanceof Array) {
+                                    row.Categories.concat(currentCategoryData);
+                                } else if (typeof currentCategoryData === "string") {
+                                    row.Categories.push(currentCategoryData);
                                 }
                             }
                         }

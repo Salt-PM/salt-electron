@@ -1,4 +1,3 @@
-const fs = require("fs-extra");
 const os = require("os");
 const ipc = require("electron-ipc-extra");
 const { ipcRenderer } = require("electron");
@@ -6,13 +5,13 @@ const salt = require("salt-nodejs");
 window.salt = salt;
 salt.getCachedListOfItems().then(console.log);
 
-async function saltSearch() {
+window.saltSearch = async function() {
     let searchTerms = document.getElementById("searchTextInput").value;
     console.log(salt.search(searchTerms).then(console.log));
     window.rows = [];
-}
+};
 
-function pickExtensions() {
+window.pickExtensions = function() {
     let selectedExtension = ipcRenderer.sendSync("open-file", {
         "title": "Select Extensions",
         properties: [
@@ -25,9 +24,9 @@ function pickExtensions() {
         ],
     });
     return selectedExtension;
-}
+};
 
-function pickOutputDestination() {
+window.pickOutputDestination = function() {
     let selectedExtension = ipcRenderer.sendSync("open-file", {
         properties: [
             "openDirectory",
@@ -36,12 +35,12 @@ function pickOutputDestination() {
         defaultPath: os.homedir()
     });
     return selectedExtension;
-}
+};
 
-async function saltDownload(id) {
+window.saltDownload = async function(id) {
     return await ipc.send("saltDownload", id);
-}
+};
 
-async function openDevTools() {
+window.openDevTools = async function() {
     return ipc.send("openDevTools");
-}
+};
