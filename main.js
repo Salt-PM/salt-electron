@@ -23,11 +23,11 @@ function createWindow() {
             enableRemoteModule: true,
             contextIsolation: false,
         },
-        icon: "./assets/Salt.png",
-        title: "Salt",
+        icon: "./assets/512x512.png",
+        title: "Salt Manager",
     });
 
-    win.removeMenu();
+    //win.removeMenu();
     win.loadFile("./ui/index.html");
 }
 
@@ -48,10 +48,9 @@ app.on("activate", () => {
 });
 
 
-
 if (require("electron-squirrel-startup")) return app.quit();
 
-ipcMain.on("open-file", (event, dialogOptions) => {
+ipcMain.on("electronDialog", (event, dialogOptions) => {
     let dialogOut = dialog.showOpenDialogSync(dialogOptions);
     if (Array.isArray(dialogOut)) {
         event.returnValue = dialogOut[0];
@@ -60,10 +59,8 @@ ipcMain.on("open-file", (event, dialogOptions) => {
     }
 });
 
-ipc.on("saltDownload", async (id) => {
-    global.process.stdout.clearLine = function () {};
-    global.process.stdout.cursorTo = function () {};
-    return await salt.download(id);
+ipc.on("saltRunnerAsync", async (verb, arg1 = null, arg2 = null, arg3 = null) => {
+    return await salt[verb](arg1, arg2, arg3);
 });
 
 ipc.on("openDevTools", async (event) => {

@@ -26,7 +26,7 @@ import { Box } from "@mui/system";
 
 
 function RepoPage() {
-	const { enqueueSnackbar } = useSnackbar();
+	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 	const [tableData, setTableData] = React.useState([]);
 	window.setTableData = setTableData;
@@ -41,7 +41,6 @@ function RepoPage() {
 	};
 
 	let rows = [];
-	const salt = window.salt;
 
 	const columns = [
 		{
@@ -113,17 +112,33 @@ function RepoPage() {
 						</IconButton>
 					</Tooltip>
 					<Tooltip title={"Refresh"}>
-						<IconButton /*className={classes.iconButton} */ onClick={refreshRepositories}>
+						<IconButton /*className={classes.iconButton} */ onClick={updateRepositories}>
 							<RefreshIcon /*className={classes.deleteIcon}*/ />
 						</IconButton>
 					</Tooltip>
 				</React.Fragment>
 			);
+		},
+		textLabels: {
+			body: {
+				noMatch: "No repositories found",
+			}
 		}
 	};
 
 	async function refreshRepositories() {
-		let repos = await salt.getRepoList()
+		let repos;
+		try {
+			repos = await window.saltRunnerAsync("getRepoList");
+		} catch (error) {
+			console.log(error);
+			if (error.message !== "No repositories file found") {
+				enqueueSnackbar(error.message, {
+					preventDuplicate: true,
+					variant: "error"
+				});
+			}
+		}
 		let rows = [];
 		for (const id in repos) {
 			if (Object.hasOwnProperty.call(repos, id)) {
@@ -134,9 +149,21 @@ function RepoPage() {
 			}
 		}
 		setTableData(rows);
+		console.log(rows);
 		return rows;
 	}
 	window.refreshRepositories = refreshRepositories;
+
+	async function updateRepositories() {
+		let sb = enqueueSnackbar(`Refreshing Files`, {
+			preventDuplicate: true,
+			variant: 'success',
+			persist: true,
+		})
+		await refreshRepositories();
+		closeSnackbar(sb);
+	}
+	window.updateRepositories = updateRepositories;
 
 	React.useEffect(() => {
 		refreshRepositories()
@@ -146,23 +173,43 @@ function RepoPage() {
 
 	async function removeRepository(id, name) {
 		console.log("Removing: " + id);
-		await salt.removeRepository(id);
-		enqueueSnackbar(`Removed ${name}`, {
-			variant: 'success',
-		});
+		try {
+			await window.saltRunnerAsync("removeRepository", id);
+			enqueueSnackbar(`Removed ${name}`, {
+				variant: 'success',
+			});
+		} catch (error) {
+			console.log(error);
+			enqueueSnackbar(error.message, {
+				preventDuplicate: true,
+				variant: 'error',
+			});
+		}
 		await refreshRepositories();
 		await window.refreshFiles();
 	}
 
 	async function addRepository() {
-		let url = new URL(repoAdderURL);
+		let url = repoAdderURL;
 		console.log("Adding: " + url);
-		let repoMeta = await salt.addRepository(url);
-		enqueueSnackbar(`Added ${repoMeta.Name}`, {
-			variant: 'success',
-		});
+		try {
+			let repoMeta = await window.saltRunnerAsync("addRepository", url);
+			enqueueSnackbar(`Added ${repoMeta.Name}`, {
+				variant: 'success',
+			});
+		} catch (error) {
+			console.log(error);
+			enqueueSnackbar(error.message, {
+				preventDuplicate: true,
+				variant: 'error',
+			});
+		}
 		await refreshRepositories();
-		await window.refreshFiles();
+		try {
+			await window.refreshFiles();
+		} catch (e) {
+			console.log(e);
+		}
 		handleRepoAdderClose();
 	}
 

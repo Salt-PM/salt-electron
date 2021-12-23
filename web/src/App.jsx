@@ -56,11 +56,11 @@ function App() {
 		palette: {
 			mode: darkMode,
 			primary: {
-				main: grey[200],
+				main: grey[700],
 				contrastText: "#fff",
 			},
 			secondary: {
-				main: grey[600],
+				main: grey[200],
 			},
 		},
 	});

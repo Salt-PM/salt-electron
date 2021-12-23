@@ -39,7 +39,7 @@ jobs:
             uses: actions/upload-artifact@v2
             with:
                 name: Windows x64
-                path: ./dist/squirrel-windows/Salt Manager Setup*.exe
+                path: ./build/squirrel-windows/Salt Manager Setup*.exe
 
 
     Build-Linux:
@@ -73,7 +73,13 @@ jobs:
             uses: actions/upload-artifact@v2
             with:
                 name: Linux AppImage
-                path: ./dist/Salt Manager-*.AppImage
+                path: ./build/Salt Manager-*.AppImage
+
+          - name: Upload Linux tar.gz
+            uses: actions/upload-artifact@v2
+            with:
+                name: Linux tar.gz
+                path: ./build/salt-electron-*.tar.gz
 
 
     Build-MacOS:
@@ -107,10 +113,10 @@ jobs:
             uses: actions/upload-artifact@v2
             with:
                 name: MacOS DMG
-                path: ./dist/Salt Manager-*.dmg
+                path: ./build/Salt Manager-*.dmg
 
           - name: Upload MacOS .app
             uses: actions/upload-artifact@v2
             with:
-                name: MacOS DMG
-                path: ./dist/Salt Manager-*.zip
+                name: MacOS .app
+                path: ./build/Salt Manager-*.zip

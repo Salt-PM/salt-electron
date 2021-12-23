@@ -1,7 +1,7 @@
 {
 	"name": "salt-electron",
 	"productName": "Salt Manager",
-	"version": "1.0.4-rc.3",
+	"version": "1.0.4-rc.4",
 	"description": "Salt is a standard for downloading, handling, and managing files.",
 	"main": "main.js",
 	"author": "meponder",
@@ -10,7 +10,7 @@
 		"electron-ipc-extra": "^2.0.0",
 		"electron-squirrel-startup": "^1.0.0",
 		"fs-extra": "^10.0.0",
-		"salt-nodejs": "^1.0.4-b"
+		"salt-nodejs": "^1.0.4-b.1"
 	},
 	"devDependencies": {
 		"electron": "^16.0.5",
@@ -48,6 +48,7 @@
 		"remoteBuild": false,
 		"removePackageScripts": true,
 		"win": {
+			"asar": false,
 			"target": [
 				{
 					"target": "squirrel",
@@ -60,14 +61,25 @@
 			"publish": [
 				{
 					"provider": "github",
-					"releaseType": "draft"
+					"releaseType": "prerelease"
 				}
 			]
 		},
+		"squirrelWindows": {
+			"iconUrl": "https://github.com/Salt-PM/salt-electron/blob/master/buildResources/Salt.ico?raw=true",
+			"remoteReleases": true
+		},
 		"linux": {
+			"asar": false,
 			"target": [
 				{
 					"target": "appImage",
+					"arch": [
+						"x64"
+					]
+				},
+				{
+					"target": "tar.gz",
 					"arch": [
 						"x64"
 					]
@@ -75,7 +87,6 @@
 			],
 			"synopsis": "Salt is a standard for downloading, handling, and managing files.",
 			"category": "Utility",
-			"icon": "./assets/256x256.png",
 			"publish": [
 				{
 					"provider": "github",
@@ -83,43 +94,32 @@
 				}
 			]
 		},
-		"squirrelWindows": {
-			"iconUrl": "https://github.com/Salt-PM/salt-electron/assets/Salt.ico?raw=true"
-		}
-	},
-	"config": {
-		"forge": {
-			"packagerConfig": {
-				"icon": "Salt.ico",
-				"ignore": [
-					"config.json",
-					"web/",
-					"readme.md"
-				]
-			},
-			"makers": [
+		"mac": {
+			"asar": false,
+			"target": [
 				{
-					"name": "@electron-forge/maker-squirrel"
+					"target": "dmg",
+					"arch": [
+						"x64"
+					]
 				},
 				{
-					"name": "@electron-forge/maker-dmg",
-					"config": {
-						"background": "./assets/dmg-background.png",
-						"format": "ULFO"
-					}
-				},
+					"target": "zip",
+					"arch": [
+						"x64"
+					]
+				}
+			],
+			"publish": [
 				{
-					"name": "@electron-forge/maker-flatpak",
-					"config": {
-						"options": {
-							"categories": [
-								"Utility"
-							]
-						}
-					}
+					"provider": "github",
+					"releaseType": "draft"
 				}
 			]
 		},
-		"packager": {}
+		"directories": {
+			"buildResources": "./buildResources",
+			"output": "./build"
+		}
 	}
 }

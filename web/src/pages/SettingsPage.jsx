@@ -16,8 +16,8 @@ import SaveIcon from "@mui/icons-material/Save";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
 function LaunchPage() {
-	const [saltOutputLocation, setSaltOutputLocation] = React.useState(window.salt.getOutputDir() || "");
-	const [saltInsecureConnections, setSaltInsecureConnections] = React.useState(window.salt.getInsecureConnectionsOpt() || false);
+	const [saltOutputLocation, setSaltOutputLocation] = React.useState(() => { try { return window.salt.getOutputDir() } catch (e) { return "" } });
+	const [saltInsecureConnections, setSaltInsecureConnections] = React.useState(() => { try { return window.salt.getInsecureConnectionsOpt() } catch (e) { return false } });
 
 	const handleOutputLocationChange = (event) => {
 		setSaltOutputLocation(event.target.value);

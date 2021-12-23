@@ -26,7 +26,7 @@ import { Box } from "@mui/system";
 
 
 function RepoPage() {
-	const { enqueueSnackbar } = useSnackbar();
+	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 	const [tableData, setTableData] = React.useState([]);
 	window.setTableData = setTableData;
@@ -41,7 +41,6 @@ function RepoPage() {
 	};
 
 	let rows = [];
-	const salt = window.salt;
 
 	const columns = [
 		{
@@ -166,11 +165,16 @@ function RepoPage() {
 					</Tooltip>
 				</React.Fragment>
 			);
-		}
+		},
+        textLabels: {
+            body: {
+              noMatch: "No extensions found",
+            }
+        }
 	};
 
 	async function refreshExtensions() {
-		let extensions = await salt.getExtensions()
+		let extensions = await window.saltRunnerAsync("getExtensions");
 		let rows = [];
 		for (const extension in extensions) {
 			if (Object.hasOwnProperty.call(extensions, extension)) {
@@ -182,6 +186,18 @@ function RepoPage() {
 		}
 		setTableData(rows);
 	}
+	window.refreshExtensions = refreshExtensions;
+
+	async function updateExtensions() {
+        let sb = enqueueSnackbar(`Refreshing Files`, {
+            preventDuplicate: true,
+            variant: 'success',
+            persist: true,
+        })
+        await refreshExtensions();
+        closeSnackbar(sb);
+	}
+	window.updateExtensions = updateExtensions;
 
 	React.useEffect(() => {
 		refreshExtensions()
@@ -191,7 +207,7 @@ function RepoPage() {
 
 	async function removeExtension(name, displayName) {
 		console.log("Removing: " + name);
-		await salt.removeExtension(name);
+		await window.saltRunnerAsync("removeExtension",name);
 		enqueueSnackbar(`Removed ${displayName}`, {
 			variant: 'success',
 		});
@@ -202,7 +218,7 @@ function RepoPage() {
 	async function addExtension() {
 		let extensionPackage = extensionPackageAdderValue.split(/[\\/]/).pop();
 		console.log("Adding: " + extensionPackage);
-		await salt.installExtension(extensionPackageAdderValue);
+		await window.saltRunnerAsync("installExtension", extensionPackageAdderValue);
 		enqueueSnackbar(`Added ${extensionPackage}`, {
 			variant: 'success',
 		});
